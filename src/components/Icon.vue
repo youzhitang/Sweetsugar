@@ -8,14 +8,7 @@
 
 // 声明一个叫importAll的方法，它等于requireContext对象，使用这个对象并调用它的keys和forEach进行requireContext
 const importAll = (requireContext: __WebpackModuleApi.RequireContext) => requireContext.keys().forEach(requireContext);
-
-try {
-  // 在单元测试的时候可能出问题
-  importAll(require.context('../assets/icons'), true, /\.svg$/);
-} catch (error) {
-  console.log(error);
-}
-
+try {importAll(require.context('../assets/icons', true, /\.svg$/));} catch (error) {console.log(error);}
 export default {
   props: ['name'],
   name: 'Icon'

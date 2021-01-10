@@ -23,6 +23,5 @@ name: "Layout"
 .content {
   flex-grow: 1;
   overflow: auto;
-  border: 1px solid blue;
 }
 </style>

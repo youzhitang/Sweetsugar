@@ -1,6 +1,6 @@
 <template>
     <Layout>
-      <p> 你好</p>
+      你好
     </Layout>
 </template>
 

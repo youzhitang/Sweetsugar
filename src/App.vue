@@ -9,9 +9,14 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  border: 1px solid green;
 }
-
+body{
+  line-height: 1.5;
+}
+a{
+  text-decoration: none;
+  color: initial;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

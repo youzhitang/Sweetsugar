@@ -1,6 +1,6 @@
 <template>
 <Layout>
-  <p> Statistics.Vue </p>
+Statistics.Vue
 </Layout>
 </template>
 

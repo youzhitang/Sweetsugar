@@ -1,6 +1,6 @@
 <template>
     <Layout>
-      <p>Labels.Vue</p>
+      Labels.Vue
     </Layout>
 </template>
 
