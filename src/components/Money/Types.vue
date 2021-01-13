@@ -11,17 +11,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+//自动引用
 import {Component} from 'vue-property-decorator';
 
-@Component({
-  props: {
-    propMessage: String
-  }
-})
-
+@Component
 export default class Types extends Vue {
   type = '-';
-  helloMsg = 'Hello,'+this.propMessage;
 
   selectType(type: string) {
     if (type !== '-' && type !== '+') {
@@ -30,22 +25,6 @@ export default class Types extends Vue {
     this.type = type;
   }
 }
-// export default {
-//   name: 'Types',
-//   data() {
-//     return {
-//       type: '-'// '-'表示支出，‘+’表示收入
-//     }
-//   },
-//   methods: {
-//     selectType(type) { // type 只能是 '-' 和 '+' 加号中的一个
-//       if (type !== '-' && type !== '+') {
-//         throw new Error('type is unknown')
-//       }
-//       this.type = type
-//     }
-//   }
-// }
 </script>
 
 <style lang="scss" scoped>
