@@ -11,7 +11,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-//自动引用
 import {Component} from 'vue-property-decorator';
 
 @Component
