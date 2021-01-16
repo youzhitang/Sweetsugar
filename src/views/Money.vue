@@ -4,7 +4,6 @@
     <Types :value.sync="record.type"/>
     <Notes @update:value="onUpdateNotes"/>
     <Tags :data-source.sync="tags" @update:value="onUpdateTags"/>
-    {{ recordList }}
   </Layout>
 </template>
 
@@ -15,37 +14,18 @@ import Tags from '@/components/Money/Tags.vue';
 import Notes from '@/components/Money/Notes.vue';
 import Types from '@/components/Money/Types.vue';
 import {Component, Watch} from 'vue-property-decorator';
+import model from '@/model';
 
 
-const recordList: Record[] = JSON.parse(window.localStorage.getItem('recordList') || '[]');
-
-//查看用户数据库版本
-const version = window.localStorage.getItem('version') || '0';
-if (version < '0.0.2') {
-// 数据库升级，数据迁移
-  recordList.forEach(record => {
-    record.createdAt = new Date(1970, 0, 0, 8, 0, 0);
-  });
-  window.localStorage.setItem('recordList', JSON.stringify(recordList));
-}
-// 数据库版本
-window.localStorage.setItem('version', '0.0.1');
-
-type  Record = {
-  tags: string[];
-  notes: string;
-  type: string;
-  amount: number; // 数据类型：object | string
-  createdAt?: Date; // 类 / 构造函数
-}
+const recordList =model.fetch();
 
 @Component({
   components: {Types, Notes, Tags, NumberPad}
 })
 export default class Money extends Vue {
   tags = ['衣', '食', '住', '行', '彩票'];
-  recordList: Record[] = recordList;
-  record: Record = {tags: [], notes: '', type: '-', amount: 0};
+  recordList: RecordItem[] = recordList;
+  record: RecordItem = {tags: [], notes: '', type: '-', amount: 0};
 
   onUpdateTags(value: string[]) {
     this.record.tags = value;
@@ -60,14 +40,14 @@ export default class Money extends Vue {
   }
 
   saveRecord() {
-    const record2: Record = JSON.parse(JSON.stringify(this.record));
+    const record2: RecordItem =model.clone(this.record)
     record2.createdAt = new Date();
     this.recordList.push(record2);
   }
 
   @Watch('recordList')
   onRecordListChange() {
-    window.localStorage.setItem('recordList', JSON.stringify(this.recordList));
+    model.save(this.recordList);
   }
 }
 </script>
