@@ -42,7 +42,6 @@ export default class Tags extends Vue {
             [...this.dataSource, name]);
       }
     }
-    console.log(name);
   }
 }
 </script>
