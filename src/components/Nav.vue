@@ -26,7 +26,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~@/assets/style/helpper.scss";
+@import "~@/assets/style/helper.scss";
 nav {
   display: flex;
   @extend %outerShadow;
