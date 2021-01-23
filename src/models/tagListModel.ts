@@ -13,11 +13,11 @@ const tagListModel: TagListModel = {
     const names = this.data.map(item => item.name);
     if (names.indexOf(name) >= 0) {return 'duplicated';}
     const id = createId().toString();
-    this.data.push({id: id, name: name});
+    this.data.push({id, name: name});
     this.save();
     return 'success';
   },
-  update(id: string, name: string) {
+  update(id, name) {
     const idList = this.data.map(item => item.id);
     if (idList.indexOf(id) >= 0) {
       const names = this.data.map(item => item.name);
@@ -25,7 +25,7 @@ const tagListModel: TagListModel = {
         return 'duplicated';
       } else {
         const tag = this.data.filter(item => item.id === id)[0];
-        tag.id = tag.name = name;
+        tag.name = name;
         this.save();
         return 'success';
       }
