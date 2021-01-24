@@ -24,8 +24,6 @@ import {Component} from 'vue-property-decorator';
   }
 })
 export default class Tags extends Vue {
-  //      todo
-  // tagList = store.fetchTags();
   selectedTags: string[] = [];
 
   created() {
