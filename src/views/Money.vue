@@ -31,8 +31,7 @@ import Button from '@/components/Button.vue';
 })
 export default class Money extends Vue {
   tags = this.$store.state.tagList;
-  record: RecordItem = {tags: [], notes: '', type: '-', amount: 0
-  };
+  record: RecordItem = {tags: [], notes: '', type: '-', amount: 0};
 
   created() {
     this.$store.commit('fetchRecords');
