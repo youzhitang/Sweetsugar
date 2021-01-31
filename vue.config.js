@@ -2,15 +2,18 @@
 const path = require('path')
 
 module.exports = {
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/Sweetsugar-website/'
+    : '/',
   lintOnSave: false,
-  chainWebpack: config =>{
+  chainWebpack: config => {
     const dir = path.resolve(__dirname, 'src/assets/icons')
 
     config.module
       .rule('svg-sprite')
       .test(/\.svg$/)
       .include.add(dir).end() // 包含 icons 目录
-      .use('svg-sprite-loader-mod').loader('svg-sprite-loader-mod').options({extract:false}).end()
+      .use('svg-sprite-loader-mod').loader('svg-sprite-loader-mod').options({extract: false}).end()
       //我们使用了一个规则叫svgo-loader，o是优化单词的缩写
       .use('svgo-loader').loader('svgo-loader')
       //添加了一个选项，removeAttrs发现加了一个svg,就删除fill属性
