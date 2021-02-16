@@ -1,7 +1,9 @@
 <template>
   <Layout>
     <Tabs :data-source="recordTypeList" :value.sync="type" class-prefix="type"/>
-    <Chart :options="x"/>
+    <div ref="chartWrapper" class="chart-wrapper">
+      <Chart :options="x" class="chart"/>
+    </div>
     <ol v-if="groupedList.length>0">
       <li v-for="(group, index) in groupedList" :key="index">
         <h3 class="title">{{ beautify(group.title) }}<span>￥{{ group.total }}</span></h3>
@@ -31,7 +33,7 @@ import clone from '@/lib/clone';
 import Chart from '@/components/Chart.vue';
 
 @Component({
-  components: {Tabs,Chart},
+  components: {Tabs, Chart},
 })
 export default class Statistics extends Vue {
   type = '-';
@@ -71,6 +73,45 @@ export default class Statistics extends Vue {
     return result;
   }
 
+  get x() {
+    return {
+      grid:{
+        left:0,
+        right:0
+      },
+      xAxis: {
+        type: 'category',
+        axisTick:{
+          alignWithLabel:true
+        },
+        data: [
+          '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+          '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
+          '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
+        ]
+      },
+      yAxis: {
+        type: 'value',
+        show: false
+      },
+      series: [{
+        symbolSize:15,
+        data: [
+          820, 932, 901, 934, 1290, 1330, 1320,
+          820, 932, 901, 934, 1290, 1330, 1320,
+          820, 932, 901, 934, 1290, 1330, 1320,
+          820, 932, 901, 934, 1290, 1330, 1320, 1, 2
+        ],
+        type: 'line'
+      }],
+      tooltip: {show: true}
+    };
+  }
+
+  mounted() {
+    (this.$refs.chartWrapper as HTMLDivElement).scrollLeft = 9999;
+  }
+
   beautify(string: string) {
     const day = dayjs(string);
     const now = dayjs();
@@ -84,32 +125,6 @@ export default class Statistics extends Vue {
     } else {
       return day.format('YYYY年M月D日');
     }
-  }
-
-  get x() {
-    return {
-      xAxis: {
-        type: 'category',
-        data: [
-          '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-          '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-          '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
-        ]
-      },
-      yAxis: {
-        type: 'value'
-      },
-      series: [{
-        data: [
-          820, 932, 901, 934, 1290, 1330, 1320,
-          820, 932, 901, 934, 1290, 1330, 1320,
-          820, 932, 901, 934, 1290, 1330, 1320,
-          820, 932, 901, 934, 1290, 1330, 1320, 1, 2
-        ],
-        type: 'line'
-      }],
-      tooltip: {show: true}
-    };
   }
 
   tagString(tags: Tag[]) {
@@ -127,6 +142,7 @@ export default class Statistics extends Vue {
   max-width: 100%;
   height: 400px;
 }
+
 .noResult {
   padding: 16px;
   text-align: center;
@@ -171,5 +187,16 @@ export default class Statistics extends Vue {
   margin-right: auto;
   margin-left: 16px;
   color: #999;
+}
+
+.chart {
+  width: 450%;
+
+  &-wrapper {
+    overflow: auto;
+    &::-webkit-scrollbar{
+      display: none;
+    }
+  }
 }
 </style>
