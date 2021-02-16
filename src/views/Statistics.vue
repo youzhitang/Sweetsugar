@@ -63,8 +63,6 @@ export default class Statistics extends Vue {
     }
     result.map(group => {
       group.total = group.items.reduce((sum, item) => {
-        console.log(sum);
-        console.log(item);
         return sum + item.amount;
       }, 0);
     });
@@ -99,16 +97,17 @@ export default class Statistics extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.noResult{
+.noResult {
   padding: 16px;
   text-align: center;
 }
+
 ::v-deep {
   .type-tabs-item {
-    background: #C4C4C4;
+    background: #ffe793;
 
     &.selected {
-      background: white;
+      background: #ffcc19;
 
       &::after {
         display: none;
