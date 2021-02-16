@@ -6,10 +6,11 @@
     </div>
     <ol v-if="groupedList.length>0">
       <li v-for="(group, index) in groupedList" :key="index">
-        <h3 class="title">{{ beautify(group.title) }}<span>￥{{ group.total }}</span></h3>
+        <h3 class="title">{{ beautify(group.title) }} <span>￥{{ group.total }}</span></h3>
         <ol>
           <li v-for="item in group.items" :key="item.id"
-              class="record">
+              class="record"
+          >
             <span>{{ tagString(item.tags) }}</span>
             <span class="notes">{{ item.notes }}</span>
             <span>￥{{ item.amount }} </span>
@@ -22,7 +23,6 @@
     </div>
   </Layout>
 </template>
-
 <script lang="ts">
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
@@ -39,8 +39,69 @@ import _ from 'lodash';
 })
 export default class Statistics extends Vue {
   type = '-';
-  interval = 'day';
   recordTypeList = recordTypeList;
+
+  get keyValueList() {
+    const today = new Date();
+    const array = [];
+    for (let i = 0; i <= 29; i++) {
+      // this.recordList = [{date:7.3, value:100}, {date:7.2, value:200}]
+      const dateString = day(today)
+          .subtract(i, 'day').format('YYYY-MM-DD');
+      const found = _.find(this.groupedList, {
+        title: dateString
+      });
+      array.push({
+        key: dateString, value: found ? found.total : 0
+      });
+    }
+    array.sort((a, b) => {
+      if (a.key > b.key) {
+        return 1;
+      } else if (a.key === b.key) {
+        return 0;
+      } else {
+        return -1;
+      }
+    });
+    return array;
+  }
+
+  get chartOptions() {
+    const keys = this.keyValueList.map(item => item.key);
+    const values = this.keyValueList.map(item => item.value);
+    return {
+      grid: {
+        left: 0,
+        right: 0,
+      },
+      xAxis: {
+        type: 'category',
+        data: keys,
+        axisTick: {alignWithLabel: true},
+        axisLabel: {
+          formatter: function (value: string, index: number) {
+            return value.substr(5);
+          }
+        }
+      },
+      yAxis: {
+        type: 'value',
+        show: false
+      },
+      series: [{
+        symbol: 'circle',
+        symbolSize: 12,
+        data: values,
+        type: 'line'
+      }],
+      tooltip: {
+        show: true, triggerOn: 'click',
+        position: 'top',
+        formatter: '{c}'
+      }
+    };
+  }
 
   get recordList() {
     return (this.$store.state as RootState).recordList;
@@ -50,14 +111,10 @@ export default class Statistics extends Vue {
     const {recordList} = this;
     const newList = clone(recordList)
         .filter(r => r.type === this.type)
-        .sort((a, b) => dayjs(b.createdAt)
-            .valueOf() - dayjs(a.createdAt).valueOf());
+        .sort((a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf());
     if (newList.length === 0) {return [];}
     type Result = { title: string; total?: number; items: RecordItem[] }[]
-    const result: Result = [{
-      title: dayjs(newList[0].createdAt)
-          .format('YYYY-MM-DD'), items: [newList[0]]
-    }];
+    const result: Result = [{title: dayjs(newList[0].createdAt).format('YYYY-MM-DD'), items: [newList[0]]}];
     for (let i = 1; i < newList.length; i++) {
       const current = newList[i];
       const last = result[result.length - 1];
@@ -75,69 +132,13 @@ export default class Statistics extends Vue {
     return result;
   }
 
-  get KeyValueList() {
-    const today = new Date();
-    const array = [];
-    for (let i = 0; i <= 29; i++) {
-      // this.recordList = [{date:7.3, value:100}, {date:7.2, value:200}]
-      const dateString = day(today)
-          .subtract(i, 'day').format('YYYY-MM-DD');
-      const found = _.find(this.recordList, {
-        createdAt: dateString
-      });
-      array.push({
-        key: dateString, value: found ? found.amount : 0
-      });
-    }
-    array.sort((a, b) => {
-      if (a.key > b.key) {
-        return 1;
-      } else if (a.key === b.key) {
-        return 0;
-      } else {
-        return -1;
-      }
-    });
-    return array;
-  }
-
-  get chartOptions() {
-    const keys = this.KeyValueList.map(item => item.key);
-    const values = this.KeyValueList.map(item => item.value);
-    return {
-      grid: {
-        left: 0,
-        right: 0
-      },
-      xAxis: {
-        type: 'category',
-        axisTick: {alignWithLabel: true},
-        axisLabel: {
-          formatter: function (value: string, index: number) {
-            return value.substr(5)
-          }
-        },
-        data: keys
-      },
-      yAxis: {
-        type: 'value',
-        show: false
-      },
-      series: [{
-        symbolSize: 15,
-        data: values,
-        type: 'line'
-      }],
-      tooltip: {
-        show: true, triggerOn: 'click',
-        position: 'top',
-        formatter: '{c}'
-      }
-    };
+  tagString(tags: Tag[]) {
+    return tags.length === 0 ? '无' :
+        tags.map(t => t.name).join('，');
   }
 
   mounted() {
-    const div = this.$refs.chartWrapper as HTMLDivElement;
+    const div = (this.$refs.chartWrapper as HTMLDivElement);
     div.scrollLeft = div.scrollWidth;
   }
 
@@ -148,16 +149,13 @@ export default class Statistics extends Vue {
       return '今天';
     } else if (day.isSame(now.subtract(1, 'day'), 'day')) {
       return '昨天';
-    }
-    if (day.isSame(now, 'year')) {
+    } else if (day.isSame(now.subtract(2, 'day'), 'day')) {
+      return '前天';
+    } else if (day.isSame(now, 'year')) {
       return day.format('M月D日');
     } else {
       return day.format('YYYY年M月D日');
     }
-  }
-
-  tagString(tags: Tag[]) {
-    return tags.length === 0 ? '无' : tags.map(t => t.name).join('，');
   }
 
   beforeCreate() {
@@ -165,7 +163,6 @@ export default class Statistics extends Vue {
   }
 }
 </script>
-
 <style lang="scss" scoped>
 .echarts {
   max-width: 100%;
