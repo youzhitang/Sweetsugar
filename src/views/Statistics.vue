@@ -74,34 +74,36 @@ export default class Statistics extends Vue {
     });
     return result;
   }
-get y(){
-  const today = new Date();
-  const array = [];
-  for (let i = 0; i <= 29; i++) {
-    // this.recordList = [{date:7.3, value:100}, {date:7.2, value:200}]
-    const dateString = day(today)
-        .subtract(i, 'day').format('YYYY-MM-DD');
-    const found = _.find(this.recordList, {
-      createdAt: dateString
-    });
-    array.push({
-      date: dateString, value: found ? found.amount : 0
-    });
-  }
-  array.sort((a,b)=>{
-    if(a.date>b.date){
-      return 1
-    }else  if(a.date===b.date){
-      return 0
-    }else {
-      return -1
+
+  get y() {
+    const today = new Date();
+    const array = [];
+    for (let i = 0; i <= 29; i++) {
+      // this.recordList = [{date:7.3, value:100}, {date:7.2, value:200}]
+      const dateString = day(today)
+          .subtract(i, 'day').format('YYYY-MM-DD');
+      const found = _.find(this.recordList, {
+        createdAt: dateString
+      });
+      array.push({
+        date: dateString, value: found ? found.amount : 0
+      });
     }
-  })
-  return array
-}
+    array.sort((a, b) => {
+      if (a.date > b.date) {
+        return 1;
+      } else if (a.date === b.date) {
+        return 0;
+      } else {
+        return -1;
+      }
+    });
+    return array;
+  }
+
   get x() {
-    const keys =this.y.map(item =>item.date)
-    const  values =this.y.map(item=>item.value)
+    const keys = this.y.map(item => item.date);
+    const values = this.y.map(item => item.value);
     return {
       grid: {
         left: 0,
@@ -109,8 +111,11 @@ get y(){
       },
       xAxis: {
         type: 'category',
-        axisTick: {
-          alignWithLabel: true
+        axisTick: {alignWithLabel: true},
+        axisLabel: {
+          formatter: function (value: string, index: number) {
+            return value.substr(5)
+          }
         },
         data: keys
       },
