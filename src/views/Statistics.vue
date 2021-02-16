@@ -75,14 +75,14 @@ export default class Statistics extends Vue {
 
   get x() {
     return {
-      grid:{
-        left:0,
-        right:0
+      grid: {
+        left: 0,
+        right: 0
       },
       xAxis: {
         type: 'category',
-        axisTick:{
-          alignWithLabel:true
+        axisTick: {
+          alignWithLabel: true
         },
         data: [
           '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
@@ -95,7 +95,7 @@ export default class Statistics extends Vue {
         show: false
       },
       series: [{
-        symbolSize:15,
+        symbolSize: 15,
         data: [
           820, 932, 901, 934, 1290, 1330, 1320,
           820, 932, 901, 934, 1290, 1330, 1320,
@@ -113,7 +113,8 @@ export default class Statistics extends Vue {
   }
 
   mounted() {
-    (this.$refs.chartWrapper as HTMLDivElement).scrollLeft = 9999;
+    const div = this.$refs.chartWrapper as HTMLDivElement;
+    div.scrollLeft = div.scrollWidth;
   }
 
   beautify(string: string) {
@@ -198,7 +199,8 @@ export default class Statistics extends Vue {
 
   &-wrapper {
     overflow: auto;
-    &::-webkit-scrollbar{
+
+    &::-webkit-scrollbar {
       display: none;
     }
   }
